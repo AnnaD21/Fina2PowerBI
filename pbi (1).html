@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Embed Report Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.min.js"></script>
+</head>
+<body>
+<div id="reportContainer" style="width: 100%; height: 98vh;"></div>
+
+<script>
+
+    window.onload=function (){
+        $.post("http://5.152.64.228:9080/api/v1/token",{}, function(data, status){
+            init(data);
+        });
+
+    }
+
+    function init(accessToken) {
+   
+        // Power BI report configuration
+        var models = window['powerbi-client'].models;
+
+        var embedConfig = {
+            type: 'report',
+            id: '9a24bccf-5188-4641-a6eb-fabc1dacd697',
+            embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=9a24bccf-5188-4641-a6eb-fabc1dacd697',
+            accessToken: accessToken,
+            tokenType: models.TokenType.Aad,
+            settings: {
+                filterPaneEnabled: true,
+                navContentPaneEnabled: true
+            }
+        };
+
+        // Embed the Power BI report
+        var reportContainer = $('#reportContainer')[0];
+        var report = powerbi.embed(reportContainer, embedConfig);
+
+        // Event handlers for report events (optional)
+        report.on('loaded', function () {
+            console.log('Report loaded');
+        });
+
+        report.on('error', function (event) {
+            console.error('Error', event.detail);
+        });
+
+        report.on('rendered', function () {
+            console.log('Report rendered');
+        });
+    }
+</script>
+</body>
+</html>
+
